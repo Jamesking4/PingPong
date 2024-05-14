@@ -15,9 +15,6 @@ public class PingPong extends Game {
 
 	SpriteBatch batch;
 	OrthographicCamera camera;
-	BitmapFont fontLarge;
-	FreeTypeFontGenerator generator;
-	FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 	Vector3 touch;
 
 	ScreenMenu screenMenu;
@@ -31,11 +28,6 @@ public class PingPong extends Game {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, SCR_WIDTH, SCR_HEIGHT);
 		touch = new Vector3();
-		generator = new FreeTypeFontGenerator
-				(Gdx.files.internal("fonts/junegull.ttf"));
-		parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-		parameter.size = 100;
-		fontLarge = generator.generateFont(parameter);
 
 		screenMenu = new ScreenMenu(this);
 		screenGame = new ScreenGame(this);

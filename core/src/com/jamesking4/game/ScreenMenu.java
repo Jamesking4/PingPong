@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -20,6 +21,8 @@ public class ScreenMenu implements Screen {
     OrthographicCamera camera;
     BitmapFont fontLarge;
     Vector3 touch;
+    FreeTypeFontGenerator generator;
+    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 
     PongButton btnStart;
     PongButton btnSettings;
@@ -34,7 +37,11 @@ public class ScreenMenu implements Screen {
         batch = pingPong.batch;
         camera = pingPong.camera;
         touch = pingPong.touch;
-        fontLarge = pingPong.fontLarge;
+        generator = new FreeTypeFontGenerator
+                (Gdx.files.internal("fonts/junegull.ttf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = (int) (SCR_HEIGHT/24);
+        fontLarge = generator.generateFont(parameter);
 
         btnStart = new PongButton("Start", SCR_HEIGHT*11/16, SCR_HEIGHT/18, fontLarge);
         btnSettings = new PongButton("Settings", SCR_HEIGHT*10/16, SCR_HEIGHT/18, fontLarge);
