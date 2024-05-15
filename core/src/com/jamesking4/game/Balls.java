@@ -7,11 +7,14 @@ import static com.jamesking4.game.ScreenGame.HEIGHT_TABLE;
 import static com.jamesking4.game.ScreenGame.TABLE_X;
 import static com.jamesking4.game.ScreenGame.TABLE_Y;
 import static com.jamesking4.game.ScreenGame.WIDTH_TABLE;
+import static com.jamesking4.game.ScreenGame.scoreBot;
+import static com.jamesking4.game.ScreenGame.scorePlayer;
 
 public class Balls {
     private float x, y;
     private float radius, startRadius;
     private float speedX, speedY, speedZ;
+    private float maxSpeedX = 10, maxSpeedY = 45;
     private int spz = 50;
     private float minZ, maxZ;
     
@@ -19,8 +22,6 @@ public class Balls {
         this.startRadius = radius;
         this.radius = startRadius;
         reSpawn();
-        speedY = random(-15f, -10f);
-        speedZ = -startRadius/spz;
         minZ = startRadius*8/10;
         maxZ = startRadius*13/10;
     }
@@ -28,14 +29,6 @@ public class Balls {
     void move() {
         x += speedX - speedZ/2;
         y += speedY;
-        if ((y > SCR_HEIGHT-radius & speedY > 0) | (y < 0 & speedY < 0))  {
-            speedY = -speedY;
-            speedY = speedY*9/10;
-        }
-        if ((x < 0 & speedX < 0) | (x + radius > SCR_WIDTH & speedX > 0)) {
-            speedX = -speedX;
-            speedX = speedX*9/10;
-        }
         radius += speedZ;
         if (radius >= maxZ) {
             speedZ = -startRadius/spz;
@@ -43,11 +36,16 @@ public class Balls {
         if (radius <= minZ) {
             speedZ = startRadius/spz;
         }
+        score();
+
     }
 
     void reSpawn() {
         x = SCR_WIDTH/2 - radius/2;
-        y = SCR_HEIGHT/2 - radius/2;
+        y = (TABLE_Y + HEIGHT_TABLE*1/10) - radius/2;
+        speedX = 0;
+        speedY = 0;
+        speedZ = 0;
     }
 
 
@@ -76,41 +74,42 @@ public class Balls {
     }
     boolean punch(float racketX, float racketY, float racketWidth, float racketHeight, float speedRX, float speedRY, int numPlayer) {
         if ((y < racketY + racketHeight & y + startRadius > racketY) & (x + startRadius > racketX & x < racketX + racketWidth)) {
-            if (speedY < 0 & numPlayer == 0) {
+            if ((speedY <= 0 & numPlayer == 0) & y < (TABLE_Y + HEIGHT_TABLE*1/4)) {
                 speedY = -speedY;
-                speedX += speedRX*9/10;
+                speedX += speedRX;
                 speedY += speedRY*2;
-                if (speedZ < 0) {
+                if (speedZ <= 0) {
                     speedZ = startRadius/spz;
                 }
                 radius = maxZ;
                 autoGuidance();
                 maxSpeed();
-            } else if (speedY > 0 & numPlayer == 1) {
+                return true;
+            } else if (speedY >= 0 & numPlayer == 1) {
                 speedY = -speedY;
-                speedX += speedRX*9/10;
+                speedX += speedRX;
                 speedY -= 7;
-                if (speedZ < 0) {
+                if (speedZ <= 0) {
                     speedZ = startRadius/spz;
                 }
                 radius = maxZ;
                 autoGuidanceBot();
                 maxSpeed();
+                return true;
             }
-            return true;
         }
         return false;
     }
     void maxSpeed() {
-        if (speedY > 35) {
-            speedY = 35;
-        } else if (speedY < -35) {
-            speedY = -35;
+        if (speedY > maxSpeedY) {
+            speedY = maxSpeedY;
+        } else if (speedY < -maxSpeedY) {
+            speedY = -maxSpeedY;
         }
-        if (speedX > 10) {
-            speedX = 10;
-        } else if (speedX < -10) {
-            speedX = -10;
+        if (speedX > maxSpeedX) {
+            speedX = maxSpeedX;
+        } else if (speedX < -maxSpeedX) {
+            speedX = -maxSpeedX;
         }
     }
     void autoGuidance() {
@@ -125,7 +124,7 @@ public class Balls {
             while (y + speedY * time > (TABLE_Y + HEIGHT_TABLE) * 20 / 21) {
                 speedY -= 1;
             }
-            while (y + speedY * time < SCR_HEIGHT / 2 * 21 / 19) {
+            while (y + speedY * time < (TABLE_Y + HEIGHT_TABLE*2.6/4)) {
                 speedY += 1;
             }
         }
@@ -142,9 +141,37 @@ public class Balls {
             while (y+speedY*time < TABLE_Y*21/20) {
                 speedY += 1;
             }
-            while (y+speedY*time > SCR_HEIGHT/2*19/21) {
+            while (y+speedY*time > (TABLE_Y + HEIGHT_TABLE* 1/4)) {
                 speedY -= 1;
             }
         }
+    }
+    void score(){
+        if (outOfScreen()) {
+            if (speedY < 0) {
+                scoreBot += 1;
+                reSpawn();
+            } else {
+                scorePlayer += 1;
+                reSpawn();
+            }
+        }
+    }
+
+    boolean punchOnTable() {
+        if (radius <= minZ) return true;
+        return false;
+    }
+    boolean ballOnTable() {
+        if ((x < TABLE_X + WIDTH_TABLE) & x > TABLE_X & y > TABLE_Y & (y < TABLE_Y + HEIGHT_TABLE)) {
+            return true;
+        }
+        return false;
+    }
+    boolean outOfScreen() {
+        if (((y > SCR_HEIGHT-radius) | (y < 0)) | ((x < 0) | (x + radius > SCR_WIDTH)))  {
+            return true;
+        }
+        return false;
     }
 }

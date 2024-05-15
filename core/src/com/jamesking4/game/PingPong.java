@@ -20,7 +20,9 @@ public class PingPong extends Game {
 	ScreenMenu screenMenu;
 	ScreenGame screenGame;
 	ScreenSettings screenSettings;
-	ScreenAbout screenAbout;
+	//ScreenAbout screenAbout;
+
+	boolean isSoundOn = true;
 	
 	@Override
 	public void create () {
@@ -32,7 +34,7 @@ public class PingPong extends Game {
 		screenMenu = new ScreenMenu(this);
 		screenGame = new ScreenGame(this);
 		screenSettings = new ScreenSettings(this);
-		screenAbout = new ScreenAbout(this);
+		//screenAbout = new ScreenAbout(this);
 
 		setScreen(screenMenu);
 	}

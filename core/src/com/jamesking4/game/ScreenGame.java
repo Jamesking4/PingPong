@@ -5,6 +5,7 @@ import static com.jamesking4.game.PingPong.SCR_WIDTH;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,10 +18,11 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import org.w3c.dom.Text;
 
 public class ScreenGame implements Screen{
-    public static final float WIDTH_TABLE = SCR_WIDTH*13/18;
-    public static final float HEIGHT_TABLE = SCR_WIDTH*13/18*9/5;
+    public static final float WIDTH_TABLE = SCR_WIDTH*13/20;
+    public static final float HEIGHT_TABLE = SCR_WIDTH*13/20*9/5;
     public static final float TABLE_X = SCR_WIDTH/2 - WIDTH_TABLE/2;
     public static final float TABLE_Y = SCR_HEIGHT/2-HEIGHT_TABLE/2;
+    public static int scoreBot, scorePlayer;
     PingPong pingPong;
 
     SpriteBatch batch;
@@ -30,6 +32,9 @@ public class ScreenGame implements Screen{
     FreeTypeFontGenerator generator;
     FreeTypeFontGenerator.FreeTypeFontParameter parameter;
     GlyphLayout layout;
+
+    Sound sndPunchOnTable;
+    Sound sndPunchOnRacket;
 
     Balls ball;
     Rackets racket;
@@ -56,9 +61,14 @@ public class ScreenGame implements Screen{
         imgBlock = new Texture("pictures/block.png");
         imgTable = new Texture("pictures/table.png");
 
+        sndPunchOnTable = Gdx.audio.newSound(Gdx.files.internal("sounds/punchOnTable.mp3"));
+        sndPunchOnRacket = Gdx.audio.newSound(Gdx.files.internal("sounds/punchOnRacket.mp3"));
+
         ball = new Balls(SCR_WIDTH*1/15);
-        racket = new Rackets(SCR_WIDTH/2 - SCR_WIDTH*1/10/2, SCR_HEIGHT*1/8, SCR_WIDTH*1/10+100, SCR_HEIGHT/50);
-        bot = new Bot(SCR_WIDTH/2 - SCR_WIDTH*1/10/2, SCR_HEIGHT-SCR_HEIGHT*1/8, SCR_WIDTH*1/10, SCR_HEIGHT/50, 0);
+        racket = new Rackets(SCR_WIDTH/2 - SCR_WIDTH*1/10/2, SCR_HEIGHT*1/8,
+                SCR_WIDTH*1/10+100, SCR_HEIGHT/50);
+        bot = new Bot(SCR_WIDTH/2 - SCR_WIDTH*1/10/2, SCR_HEIGHT-SCR_HEIGHT*1/8,
+                SCR_WIDTH*1/10, SCR_HEIGHT/50, 0);
     }
 
     @Override
@@ -68,6 +78,7 @@ public class ScreenGame implements Screen{
 
     @Override
     public void render(float delta) {
+
         if(Gdx.input.isTouched()) {
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
@@ -80,9 +91,32 @@ public class ScreenGame implements Screen{
         bot.move(ball.getX(), ball.getY());
         bot.speed(ball.getSpeedX(), ball.getSpeedY(), ball.getStartRadius());
         ball.move();
-        ball.punch(racket.getX(), racket.getY(), racket.getWidth(), racket.getHeight(), racket.getSpeedX(), racket.getSpeedY(), 0);
-        if (ball.punch(bot.getX(), bot.getY(), bot.getWidth(), bot.getHeight(), bot.getSpeedX(), bot.getSpeedY(), 1)) {
+        if (ball.punch(racket.getX(), racket.getY(), racket.getWidth(), racket.getHeight(),
+                racket.getSpeedX(), racket.getSpeedY(), 0)) {
+            if (pingPong.isSoundOn) {
+                if (Math.abs(racket.getSpeedX()) + Math.abs(racket.getSpeedY()) > 0.8f) {
+                    sndPunchOnRacket.play(1f);
+                } else {
+                    sndPunchOnRacket.play(0.5f);
+                }
+            }
+        }
+        if (ball.punch(bot.getX(), bot.getY(), bot.getWidth(), bot.getHeight(), bot.getSpeedX(),
+                bot.getSpeedY(), 1)) {
+            if (pingPong.isSoundOn) {
+                if (Math.abs(bot.getSpeedX()) + Math.abs(bot.getSpeedY()) > 0.8f) {
+                    sndPunchOnRacket.play(1f);
+                } else {
+                    sndPunchOnRacket.play(0.5f);
+                }
+
+            }
             bot.punch();
+        }
+        if (ball.punchOnTable()) {
+            if (pingPong.isSoundOn & ball.ballOnTable()) {
+                sndPunchOnTable.play(1);
+            }
         }
         ScreenUtils.clear(1, 0, 0, 1);
         batch.setProjectionMatrix(camera.combined);
@@ -95,6 +129,9 @@ public class ScreenGame implements Screen{
         fontLarge.draw(batch, "Bot", SCR_WIDTH/2 + SCR_WIDTH*1/10 -
                 new GlyphLayout(fontLarge, "Bot").width, SCR_HEIGHT*98/100);
         fontLarge.draw(batch, "You", SCR_WIDTH/2 - SCR_WIDTH*1/10, SCR_HEIGHT*98/100);
+        fontLarge.draw(batch, Integer.toString(scoreBot), SCR_WIDTH/2 + SCR_WIDTH*1/10 -
+                new GlyphLayout(fontLarge, Integer.toString(scoreBot)).width, SCR_HEIGHT*95/100);
+        fontLarge.draw(batch, Integer.toString(scorePlayer), SCR_WIDTH/2 - SCR_WIDTH*1/10, SCR_HEIGHT*95/100);
         batch.end();
     }
 
@@ -122,5 +159,7 @@ public class ScreenGame implements Screen{
     public void dispose() {
 
     }
+
+
 
 }

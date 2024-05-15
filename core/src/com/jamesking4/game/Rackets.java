@@ -25,7 +25,7 @@ public class Rackets {
         ticrate += 1;
         this.x = x - width/2;
         this.y = y - height/2;
-        if (ticrate >= 2) {
+        if (ticrate >= 10) {
             lastX = this.x;
             lastY = this.y;
             ticrate = 0;

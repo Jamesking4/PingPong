@@ -26,7 +26,7 @@ public class ScreenMenu implements Screen {
 
     PongButton btnStart;
     PongButton btnSettings;
-    PongButton btnAbout;
+    //PongButton btnAbout;
     PongButton btnExit;
 
     Texture imgBackGround;
@@ -45,8 +45,8 @@ public class ScreenMenu implements Screen {
 
         btnStart = new PongButton("Start", SCR_HEIGHT*11/16, SCR_HEIGHT/18, fontLarge);
         btnSettings = new PongButton("Settings", SCR_HEIGHT*10/16, SCR_HEIGHT/18, fontLarge);
-        btnAbout = new PongButton("About", SCR_HEIGHT*9/16, SCR_HEIGHT/18, fontLarge);
-        btnExit = new PongButton("Exit", SCR_HEIGHT*8/16, SCR_HEIGHT/18, fontLarge);
+        //btnAbout = new PongButton("About", SCR_HEIGHT*9/16, SCR_HEIGHT/18, fontLarge);
+        btnExit = new PongButton("Exit", SCR_HEIGHT*9/16, SCR_HEIGHT/18, fontLarge);
 
         imgBackGround = new Texture("pictures/backGroundMenu.png");
 
@@ -69,9 +69,9 @@ public class ScreenMenu implements Screen {
             if(btnSettings.hit(touch.x, touch.y)){
                 pingPong.setScreen(pingPong.screenSettings);
             }
-            if(btnAbout.hit(touch.x, touch.y)){
+            /*if(btnAbout.hit(touch.x, touch.y)){
                 pingPong.setScreen(pingPong.screenAbout);
-            }
+            }*/
             if(btnExit.hit(touch.x, touch.y)){
                 Gdx.app.exit();
             }
@@ -83,7 +83,7 @@ public class ScreenMenu implements Screen {
         batch.draw(imgBackGround, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         btnStart.font.draw(batch, btnStart.text, btnStart.x, btnStart.y);
         btnSettings.font.draw(batch, btnSettings.text, btnSettings.x, btnSettings.y);
-        btnAbout.font.draw(batch, btnAbout.text, btnAbout.x, btnAbout.y);
+        //btnAbout.font.draw(batch, btnAbout.text, btnAbout.x, btnAbout.y);
         btnExit.font.draw(batch, btnExit.text, btnExit.x, btnExit.y);
         batch.end();
     }
