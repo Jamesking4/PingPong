@@ -62,7 +62,6 @@ public class ScreenMenu implements Screen {
         if(Gdx.input.justTouched()){
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
-
             if(btnStart.hit(touch.x, touch.y)){
                 pingPong.setScreen(pingPong.screenGame);
             }
@@ -75,6 +74,7 @@ public class ScreenMenu implements Screen {
             if(btnExit.hit(touch.x, touch.y)){
                 Gdx.app.exit();
             }
+            touch.setZero();
         }
         
         ScreenUtils.clear(1, 0, 0, 1);

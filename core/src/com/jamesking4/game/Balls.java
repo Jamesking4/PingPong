@@ -74,7 +74,7 @@ public class Balls {
     }
     boolean punch(float racketX, float racketY, float racketWidth, float racketHeight, float speedRX, float speedRY, int numPlayer) {
         if ((y < racketY + racketHeight & y + startRadius > racketY) & (x + startRadius > racketX & x < racketX + racketWidth)) {
-            if ((speedY <= 0 & numPlayer == 0) & y < (TABLE_Y + HEIGHT_TABLE*1/4)) {
+            if ((speedY <= 0 & numPlayer == 0) & y < (TABLE_Y + HEIGHT_TABLE*1/4) & (speedRY) >= 0) {
                 speedY = -speedY;
                 speedX += speedRX;
                 speedY += speedRY*2;

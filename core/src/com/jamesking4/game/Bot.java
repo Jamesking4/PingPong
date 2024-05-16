@@ -12,7 +12,7 @@ public class Bot extends Rackets{
     private float startY;
     private float width, height;
     private float ballRadius;
-    private float maxSpeedX = 8.6f;
+    private float maxSpeedX = 8.4f;
     private float ballSpeedY, ballSpeedX;
     private int hard;
     private boolean comeBack;

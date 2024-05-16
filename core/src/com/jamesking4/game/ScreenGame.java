@@ -157,9 +157,14 @@ public class ScreenGame implements Screen{
 
     @Override
     public void dispose() {
-
+        imgTable.dispose();
+        imgBall.dispose();
+        imgBlock.dispose();
+        imgBackGround.dispose();
+        sndPunchOnRacket.dispose();
+        sndPunchOnTable.dispose();
+        fontLarge.dispose();
     }
-
 
 
 }

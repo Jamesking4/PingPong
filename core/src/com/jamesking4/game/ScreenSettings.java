@@ -47,11 +47,8 @@ public class ScreenSettings implements Screen {
 
         imgBackGround = new Texture("pictures/bgPingPong.png");
 
-        loadSettings();
-
         btnSound = new PongButton(pingPong.isSoundOn?"Sound On":"Sound Off", SCR_HEIGHT*14/16, SCR_HEIGHT/18, fontLarge);
-        btnClearRecords = new PongButton("Clear Records", SCR_HEIGHT*13/16, SCR_HEIGHT/18, fontLarge);
-        btnBack = new PongButton("Back", SCR_HEIGHT*12/16, SCR_HEIGHT/18, fontLarge);
+        btnBack = new PongButton("Back", SCR_HEIGHT*13/16, SCR_HEIGHT/18, fontLarge);
 
     }
 
@@ -89,7 +86,6 @@ public class ScreenSettings implements Screen {
         batch.begin();
         batch.draw(imgBackGround, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         btnSound.font.draw(batch, btnSound.text, btnSound.x, btnSound.y);
-        btnClearRecords.font.draw(batch, btnClearRecords.text, btnClearRecords.x, btnClearRecords.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
@@ -111,24 +107,12 @@ public class ScreenSettings implements Screen {
 
     @Override
     public void hide() {
-        btnClearRecords.setText("Clear Records");
-        saveSettings();
     }
 
     @Override
     public void dispose() {
 
     }
-    private void saveSettings() {
-        Preferences preferences = Gdx.app.getPreferences("SpaceDistShooterSettings");
-        preferences.putBoolean("sound", pingPong.isSoundOn);
-        preferences.flush();
-    }
 
-    private void loadSettings() {
-        Preferences preferences = Gdx.app.getPreferences("SpaceDistShooterSettings");
-        if(preferences.contains("sound")){
-            pingPong.isSoundOn = preferences.getBoolean("sound");
-        }
-    }
+
 }
